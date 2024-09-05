@@ -1,22 +1,33 @@
 #include "Game.h"
+#include "MainMenuState.h"
+
+Game::Game()
+    : mWindow(sf::VideoMode(1920,1080), "State Game", sf::Style::Close)
+    , mCurrentState{nullptr}
+{
+    ChangeState(std::make_unique<MainMenuState>());
+}
 
 void Game::Run()
 {
-    sf::RenderWindow window(sf::VideoMode(1920, 1080), "Default Window");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
-
-    while (window.isOpen())
+    while (mWindow.isOpen())
     {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
-
-        window.clear();
-        window.draw(shape);
-        window.display();
+        if (mCurrentState) { mCurrentState->HandleInput(*this); }
+        if (mCurrentState) { mCurrentState->Update(*this); }
+        mWindow.clear();
+        if (mCurrentState) { mCurrentState->Draw(*this, mWindow); }
+        mWindow.display();
     }
+}
+
+void Game::ChangeState(std::unique_ptr<GameState> newState)
+{
+    if (newState) { newState->Enter(*this); } // Enter new state
+    if (mCurrentState) { mCurrentState->Exit(*this); } // Exits previous state for seamless transition
+    mCurrentState = std::move(newState); // Unique pointer ensures deletion of previous state
+}
+
+sf::RenderWindow& Game::GetWindow()
+{
+    return mWindow;
 }
