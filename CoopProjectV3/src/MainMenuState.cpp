@@ -54,7 +54,6 @@ void MainMenuState::Update(Game& game)
 	if (mC6.getPosition().x >= bgWidth) { mC6.setPosition(mC5.getPosition().x - bgWidth, 0.0f); }
 	if (mC7.getPosition().x >= bgWidth) { mC7.setPosition(mC8.getPosition().x - bgWidth, 0.0f); }
 	if (mC8.getPosition().x >= bgWidth) { mC8.setPosition(mC7.getPosition().x - bgWidth, 0.0f); }
-	
 }
 
 void MainMenuState::Draw(Game& game, sf::RenderWindow& window)

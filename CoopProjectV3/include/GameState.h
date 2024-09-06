@@ -4,7 +4,8 @@
 class Game;
 
 class GameState
-{ public:
+{ 
+public:
 	virtual					~GameState() = default;
 
 	virtual void			Enter(Game& game) = 0;

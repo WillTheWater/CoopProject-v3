@@ -9,7 +9,6 @@ class Game
 public:
 	Game();
 
-
 	void						Run();
 	void						ChangeState(std::unique_ptr<GameState> newState);
 	sf::RenderWindow&			GetWindow();
