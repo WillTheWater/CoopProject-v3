@@ -51,6 +51,9 @@ private:
 	int m_minRanRadius;
 	int m_ballsToGenerate;
 
+	double m_offsetX;
+	double m_offsetY;
+
 	std::vector<Ball*> m_balls;
 	sf::RenderWindow& m_windowRef;
 	Ball* m_selectedBall;

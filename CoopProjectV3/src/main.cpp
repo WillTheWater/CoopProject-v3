@@ -25,7 +25,9 @@ int main()
         testbox.handleCollisionBox();
         testbox.handleCollisionBall();
         testbox.applyFriction(deltaTime);
+        testbox.pollMouse(); // Not working yet
         testbox.render();
+        
 
         window.display();
         //testbox.pollMouse();

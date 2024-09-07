@@ -31,6 +31,8 @@ public:
 	void setVelMagnitude(const double magnitude);
 
 	void updatePosition(double deltaTime);
+
+	bool isBallAtRest(Ball* ball);
 	
 
 private:

@@ -89,3 +89,8 @@ void Ball::updatePosition(double deltaTime) {
 	m_velocity += m_acceleration * deltaTime;
 	m_circle.setPosition({ (float)m_position.getx() - (float)m_radius, (float)m_position.gety() - (float)m_radius});
 }
+
+bool Ball::isBallAtRest(Ball* ball)
+{
+	return (ball->getVelocity().getx() == 0 && ball->getVelocity().gety() == 0);
+}

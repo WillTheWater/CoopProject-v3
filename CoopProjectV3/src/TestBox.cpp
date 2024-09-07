@@ -12,9 +12,14 @@ TestBox::TestBox(int width, int height, sf::RenderWindow& window, int minVel, in
 	, m_maxRanRadius(maxRad)
 	, m_ballsToGenerate(numBalls)
 	, m_rect{ sf::Vector2f(width, height) }
+	, m_offsetX{0}
+	, m_offsetY{0}
 {
 	m_rect.setFillColor(sf::Color::Green);
 	createRandomBalls();
+	m_offsetX = (m_windowRef.getSize().x - m_rect.getSize().x) / 2;
+	m_offsetY = (m_windowRef.getSize().y - m_rect.getSize().y) / 2;
+
 }
 
 TestBox::~TestBox()
@@ -54,10 +59,7 @@ void TestBox::createRandomBalls()
 
 void TestBox::render()
 {
-	double offsetX = (m_windowRef.getSize().x - m_rect.getSize().x) / 2;
-	double offsetY = (m_windowRef.getSize().y - m_rect.getSize().y) / 2;
-
-	m_rect.setPosition(offsetX, offsetY);
+	m_rect.setPosition(m_offsetX, m_offsetY);
 
 	m_windowRef.draw(m_rect);
 	for (Ball* b : m_balls)
@@ -68,7 +70,7 @@ void TestBox::render()
 		double circlePosX = b->getCircle().getPosition().x;
 		double circlePosY = b->getCircle().getPosition().y;
 		double radius = b->getRadius();
-		b->getCircle().setPosition(circlePosX + offsetX, circlePosY + offsetY);
+		b->getCircle().setPosition(circlePosX + m_offsetX, circlePosY + m_offsetY);
 		m_windowRef.draw(b->getCircle());
 
 		// Render the velocity vector line
@@ -78,9 +80,9 @@ void TestBox::render()
 		double vel_liney = circlePosY + 0.3 * vely;
 
 		sf::VertexArray lines(sf::LinesStrip, 2);
-		lines[0].position = sf::Vector2f(circlePosX + offsetX + radius, circlePosY + offsetY + radius);
+		lines[0].position = sf::Vector2f(circlePosX + m_offsetX + radius, circlePosY + m_offsetY + radius);
 		lines[0].color = sf::Color::Red;
-		lines[1].position = sf::Vector2f(vel_linex + offsetX + radius, vel_liney + offsetY + radius);
+		lines[1].position = sf::Vector2f(vel_linex + m_offsetX + radius, vel_liney + m_offsetY + radius);
 		lines[1].color = sf::Color::Red;
 		m_windowRef.draw(lines);		
 	}
@@ -287,5 +289,25 @@ bool TestBox::ballsAtRest()
 void TestBox::pollMouse()
 {
 	sf::Vector2i mousePos = sf::Mouse::getPosition(m_windowRef);
-	std::cout << mousePos.x, mousePos.y; 
+	double mousex = mousePos.x;
+	double mousey = mousePos.y;
+	
+	for (Ball* b : m_balls)
+	{
+		double bposx = b->getPosition().getx() + m_offsetX;
+		double bposy = b->getPosition().gety() + m_offsetY;
+
+		double distance = std::sqrt(std::pow((bposx - mousex), 2) + std::pow((bposy - mousey), 2));
+		if (distance < (b->getRadius()))
+		{
+			//b->getCircle().setFillColor(sf::Color::Red);
+			b->getCircle().setOutlineThickness(5);
+			b->getCircle().setOutlineColor(sf::Color::Red);
+		}
+		else
+		{
+			b->getCircle().setOutlineThickness(0);
+		}
+
+	}
 }
