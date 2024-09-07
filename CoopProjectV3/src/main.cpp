@@ -6,11 +6,9 @@ int main()
    /* Game game;
     game.Run();*/
 
-    sf::RenderWindow window(sf::VideoMode(800, 600), "State Game", sf::Style::Close);
-    TestBox testbox(800, 600, window);
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "State Game", sf::Style::Close);
+    TestBox testbox(800, 600, window, 0, 500, 10, 50, 20);
     window.setFramerateLimit(60);
-
-    testbox.createRandomBalls(10);
 
     sf::CircleShape circle(20);
     circle.setFillColor(sf::Color::Blue);

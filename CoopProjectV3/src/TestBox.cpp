@@ -1,46 +1,87 @@
 #include "TestBox.h"
 
 
-TestBox::TestBox(int width, int height, sf::RenderWindow& window)
+TestBox::TestBox(int width, int height, sf::RenderWindow& window, int minVel, int maxVel, int minRad, int maxRad, int numBalls)
 	: m_width{ width }
 	, m_height{ height }
 	, m_balls{}
 	, m_windowRef{ window }
+	, m_minRanVel(minVel)
+	, m_maxRanVel(maxVel)
+	, m_minRanRadius(minRad)
+	, m_maxRanRadius(maxRad)
+	, m_ballsToGenerate(numBalls)
+	, m_rect{ sf::Vector2f(width, height) }
 {
+	m_rect.setFillColor(sf::Color::Green);
+	createRandomBalls();
 }
 
-void TestBox::createRandomBalls(int num)
+TestBox::~TestBox()
 {
-	for(int i{0}; i < num; i++)
+	destroyBalls();
+}
+
+void TestBox::resetBalls()
+{
+	destroyBalls();
+	createRandomBalls();
+}
+
+void TestBox::destroyBalls()
+{
+	for (Ball* b : m_balls)
+	{
+		if (b != nullptr)
+		{
+			delete b;
+			b = nullptr;
+		}
+	}
+	m_balls.clear();
+}
+
+void TestBox::createRandomBalls()
+{
+	for(int i{0}; i < m_ballsToGenerate; i++)
 	{
 		Vec2 pos{ Random::getRandomDouble(0,m_width), Random::getRandomDouble(0,m_height) };
-		Vec2 vel{ Random::getRandomDouble(0,500), Random::getRandomDouble(0,500) };
-		double radius = Random::getRandomDouble(10, 50);
+		Vec2 vel{ Random::getRandomDouble(m_minRanVel,m_maxRanVel), Random::getRandomDouble(m_minRanVel,m_maxRanVel) };
+		double radius = Random::getRandomDouble(m_minRanRadius, m_maxRanRadius);
 		m_balls.push_back(new Ball(radius, pos, vel, 0));
 	}
 }
 
 void TestBox::render()
 {
+	double offsetX = (m_windowRef.getSize().x - m_rect.getSize().x) / 2;
+	double offsetY = (m_windowRef.getSize().y - m_rect.getSize().y) / 2;
+
+	m_rect.setPosition(offsetX, offsetY);
+
+	m_windowRef.draw(m_rect);
 	for (Ball* b : m_balls)
 	{
 		
 
 		// Render the circle
-		//b->getCircle().setPosition(render_xpos, render_ypos);
+		double circlePosX = b->getCircle().getPosition().x;
+		double circlePosY = b->getCircle().getPosition().y;
+		double radius = b->getRadius();
+		b->getCircle().setPosition(circlePosX + offsetX, circlePosY + offsetY);
 		m_windowRef.draw(b->getCircle());
 
 		// Render the velocity vector line
-		double xpos = b->getPosition().getx();
-		double ypos = b->getPosition().gety();
 		double velx = b->getVelocity().getx();
 		double vely = b->getVelocity().gety();
-		double vel_linex = xpos + velx ;
-		double vel_liney = ypos + vely ;
+		double vel_linex = circlePosX + 0.3 * velx;
+		double vel_liney = circlePosY + 0.3 * vely;
 
 		sf::VertexArray lines(sf::LinesStrip, 2);
-		lines[0].position = sf::Vector2f(xpos, ypos);
-		lines[1].position = sf::Vector2f(vel_linex, vel_liney);
+		lines[0].position = sf::Vector2f(circlePosX + offsetX + radius, circlePosY + offsetY + radius);
+		lines[0].color = sf::Color::Red;
+		lines[1].position = sf::Vector2f(vel_linex + offsetX + radius, vel_liney + offsetY + radius);
+		lines[1].color = sf::Color::Red;
 		m_windowRef.draw(lines);		
 	}
 
