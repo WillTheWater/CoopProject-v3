@@ -136,3 +136,8 @@ double Vec2::angleInDegrees()
 {
 	return std::atan2(this->m_y, this->m_x) * (180 / PI);
 }
+
+double Vec2::angleInRads()
+{
+	return std::atan2(this->m_y, this->m_x);
+}

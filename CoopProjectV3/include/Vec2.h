@@ -60,6 +60,8 @@ public:
 
 	double angleInDegrees();
 
+	double angleInRads();
+
 private:
 	double m_x;
 	double m_y;

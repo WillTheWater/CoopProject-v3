@@ -41,6 +41,12 @@ public:
 
 	void pollMouse();
 
+	void shootBall();
+
+	void incrementMouseHeldTime(double deltaTime);
+
+	void testMouseHeld(sf::Event& e);
+
 private:
 
 	int m_width;
@@ -50,6 +56,10 @@ private:
 	int m_maxRanRadius;
 	int m_minRanRadius;
 	int m_ballsToGenerate;
+
+	bool m_mouseDown;
+
+	double m_mouseHeldTime;
 
 	double m_offsetX;
 	double m_offsetY;

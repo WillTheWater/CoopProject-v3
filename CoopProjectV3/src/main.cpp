@@ -6,8 +6,8 @@ int main()
    /* Game game;
     game.Run();*/
 
-    sf::RenderWindow window(sf::VideoMode(1920, 1080), "State Game", sf::Style::Close);
-    TestBox testbox(800, 600, window, 0, 500, 10, 50, 20);
+    sf::RenderWindow window(sf::VideoMode(1280, 900), "State Game", sf::Style::Close);
+    TestBox testbox(800, 600, window, 0, 500, 10, 50, 10);
     window.setFramerateLimit(60);
 
     sf::CircleShape circle(20);
@@ -18,8 +18,11 @@ int main()
 
     double deltaTime = 0;
 
-    while (true)
+    sf::Event e;  
+
+    while (window.isOpen())
     {
+
         window.clear(sf::Color::Black);
         testbox.update(deltaTime);
         testbox.handleCollisionBox();
@@ -27,16 +30,19 @@ int main()
         testbox.applyFriction(deltaTime);
         testbox.pollMouse(); // Not working yet
         testbox.render();
-        
-
         window.display();
-        //testbox.pollMouse();
-        if (testbox.ballsAtRest())
+    
+        if(window.pollEvent(e))
         {
-            std::cout << "Balls at rest" << '\n';
+            testbox.testMouseHeld(e);
         }
-
+        testbox.incrementMouseHeldTime(deltaTime);
+        
         deltaTime = clock.restart().asSeconds();
+        
     }
+    
+
+        
     return 0;
 }

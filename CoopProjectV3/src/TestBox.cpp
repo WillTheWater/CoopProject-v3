@@ -14,12 +14,12 @@ TestBox::TestBox(int width, int height, sf::RenderWindow& window, int minVel, in
 	, m_rect{ sf::Vector2f(width, height) }
 	, m_offsetX{0}
 	, m_offsetY{0}
+	, m_mouseDown{ false }
 {
 	m_rect.setFillColor(sf::Color::Green);
 	createRandomBalls();
 	m_offsetX = (m_windowRef.getSize().x - m_rect.getSize().x) / 2;
 	m_offsetY = (m_windowRef.getSize().y - m_rect.getSize().y) / 2;
-
 }
 
 TestBox::~TestBox()
@@ -85,8 +85,30 @@ void TestBox::render()
 		lines[1].position = sf::Vector2f(vel_linex + m_offsetX + radius, vel_liney + m_offsetY + radius);
 		lines[1].color = sf::Color::Red;
 		m_windowRef.draw(lines);		
+
+
 	}
 
+	if (m_selectedBall)
+	{
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+			double brad = m_selectedBall->getRadius();
+			double bposx = m_selectedBall->getPosition().getx() + m_offsetX;
+			double bposy = m_selectedBall->getPosition().gety() + m_offsetY;
+
+			sf::Vector2i mousePos = sf::Mouse::getPosition(m_windowRef);
+			double mPosx = mousePos.x;
+			double mPosy = mousePos.y;
+			sf::VertexArray lines(sf::LinesStrip, 2);
+			lines[0].position = sf::Vector2f(bposx, bposy);
+			lines[0].color = sf::Color::Red;
+			lines[1].position = sf::Vector2f(mPosx, mPosy);
+			lines[1].color = sf::Color::Red;
+			m_windowRef.draw(lines);
+
+		}
+	}
 }
 
 void TestBox::update(double deltaTime)
@@ -149,7 +171,7 @@ void TestBox::handleCollisionBall()
 				continue;
 			}
 
-			std::cout << "Collision resolved" << '\n';
+			// std::cout << "Collision resolved" << '\n';
 
 			double b1Radius = m_balls[i]->getRadius();
 			double b2Radius = m_balls[j]->getRadius();
@@ -303,11 +325,97 @@ void TestBox::pollMouse()
 			//b->getCircle().setFillColor(sf::Color::Red);
 			b->getCircle().setOutlineThickness(5);
 			b->getCircle().setOutlineColor(sf::Color::Red);
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			{
+				m_selectedBall = b;
+			}
 		}
 		else
 		{
 			b->getCircle().setOutlineThickness(0);
 		}
 
+	}
+}
+
+
+void TestBox::testMouseHeld(sf::Event& e)
+{
+	/*if(!ballsAtRest())
+	{
+		return;
+	}*/
+
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		m_mouseDown = true;
+	}
+	else
+	{
+		if (m_mouseHeldTime > 0)
+		{
+
+			if (m_selectedBall)
+			{
+				shootBall();
+			}
+
+			m_selectedBall = nullptr;
+
+		}
+
+		m_mouseDown = false;
+
+	}
+
+	system("cls");
+	std::cout << m_mouseHeldTime << '\n';
+		
+}
+
+void TestBox::shootBall()
+{
+	if (!m_selectedBall)
+	{
+		return;
+	}
+
+	
+
+	sf::Vector2i mousePos = sf::Mouse::getPosition(m_windowRef);
+	double mousePosX = mousePos.x;
+	double mousePosY = mousePos.y;
+
+	double bPosx = m_selectedBall->getPosition().getx() + m_offsetX;
+	double bPosy = m_selectedBall->getPosition().gety() + m_offsetY;
+
+
+	Vec2 lineToPoint{ (bPosx - mousePosX), (bPosy - mousePosY) };
+
+	lineToPoint = lineToPoint; 
+
+	double angle = lineToPoint.angleInRads();
+
+	double scalingFactor = lineToPoint.magnitude();
+
+	double velX = std::cos(angle);
+	double velY = std::sin(angle);
+
+	velX = velX * 2 * scalingFactor;
+	velY = velY * 2 * scalingFactor;
+
+	m_selectedBall->setVelocity(Vec2{velX, velY});
+
+}
+
+void TestBox::incrementMouseHeldTime(double deltaTime)
+{
+	if (m_mouseDown)
+	{
+		m_mouseHeldTime += deltaTime;
+	}
+	else if(!m_mouseDown)
+	{
+		m_mouseHeldTime = 0;
 	}
 }
