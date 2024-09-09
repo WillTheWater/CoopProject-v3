@@ -6,6 +6,9 @@
 
 void PlayState::Enter(Game& game)
 {
+
+	game.InitializeSim(); // This runs once
+
 	std::cout << "Entering Play State\n";
 	auto bgTexture = game.GetTextureManager().GetTexture("assets/graphics/cloud6/1.png");
 	auto c1T = game.GetTextureManager().GetTexture("assets/graphics/cloud6/2.png");
@@ -21,6 +24,7 @@ void PlayState::Enter(Game& game)
 	mC6.setTexture(*c3T); mC6.setScale(3.4f, 3.4f); mC6.setPosition(mC3.getGlobalBounds().width, 0.0f);
 	mC7.setTexture(*c4T); mC7.setScale(3.4f, 3.4f); mC7.setPosition(0.0f, 0.0f);
 	mC8.setTexture(*c4T); mC8.setScale(3.4f, 3.4f); mC8.setPosition(mC3.getGlobalBounds().width, 0.0f);
+
 }
 
 void PlayState::HandleInput(Game& game)
@@ -36,12 +40,16 @@ void PlayState::HandleInput(Game& game)
 		{
 			if (event.key.code == sf::Keyboard::M) { game.ChangeState(std::make_unique<MainMenuState>()); }
 			if (event.key.code == sf::Keyboard::G) { game.ChangeState(std::make_unique<GameOverState>()); }
+			if (event.key.code == sf::Keyboard::R) { game.ResetSim(); }
 		}
 	}
+
+	game.HandleInputSim();
 }
 
 void PlayState::Update(Game& game)
 {
+
 	float dT = game.GetDeltaTime();
 	float bgWidth = mBgTexture.getGlobalBounds().width;
 	mC1.move(4.f * dT, 0.0f); mC2.move(4.f * dT, 0.0f);
@@ -56,6 +64,8 @@ void PlayState::Update(Game& game)
 	if (mC6.getPosition().x >= bgWidth) { mC6.setPosition(mC5.getPosition().x - bgWidth, 0.0f); }
 	if (mC7.getPosition().x >= bgWidth) { mC7.setPosition(mC8.getPosition().x - bgWidth, 0.0f); }
 	if (mC8.getPosition().x >= bgWidth) { mC8.setPosition(mC7.getPosition().x - bgWidth, 0.0f); }
+
+	game.UpdateSim();
 }
 
 void PlayState::Draw(Game& game, sf::RenderWindow& window)
@@ -66,6 +76,8 @@ void PlayState::Draw(Game& game, sf::RenderWindow& window)
 	window.draw(mC3); window.draw(mC4);
 	window.draw(mC5); window.draw(mC6);
 	window.draw(mC7); window.draw(mC8);
+
+	game.DrawingSim();
 }
 
 void PlayState::Exit(Game& game)

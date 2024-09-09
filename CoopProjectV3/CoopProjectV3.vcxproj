@@ -144,21 +144,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Ball.cpp" />
     <ClCompile Include="src\GameOverState.cpp" />
     <ClCompile Include="src\PlayState.cpp" />
-    <ClCompile Include="src\GameState.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\MainMenuState.cpp" />
+    <ClCompile Include="src\random.cpp" />
+    <ClCompile Include="src\BallSimulation.cpp" />
     <ClCompile Include="src\TextureManager.cpp" />
+    <ClCompile Include="src\Vec2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Ball.h" />
     <ClInclude Include="include\GameOverState.h" />
     <ClInclude Include="include\GameState.h" />
     <ClInclude Include="include\Game.h" />
     <ClInclude Include="include\MainMenuState.h" />
     <ClInclude Include="include\PlayState.h" />
+    <ClInclude Include="include\random.h" />
+    <ClInclude Include="include\BallSimulation.h" />
     <ClInclude Include="include\TextureManager.h" />
+    <ClInclude Include="include\Vec2.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
