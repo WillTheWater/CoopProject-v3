@@ -151,7 +151,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\MainMenuState.cpp" />
     <ClCompile Include="src\random.cpp" />
-    <ClCompile Include="src\TestBox.cpp" />
+    <ClCompile Include="src\BallSimulation.cpp" />
     <ClCompile Include="src\TextureManager.cpp" />
     <ClCompile Include="src\Vec2.cpp" />
   </ItemGroup>
@@ -163,7 +163,7 @@
     <ClInclude Include="include\MainMenuState.h" />
     <ClInclude Include="include\PlayState.h" />
     <ClInclude Include="include\random.h" />
-    <ClInclude Include="include\TestBox.h" />
+    <ClInclude Include="include\BallSimulation.h" />
     <ClInclude Include="include\TextureManager.h" />
     <ClInclude Include="include\Vec2.h" />
   </ItemGroup>

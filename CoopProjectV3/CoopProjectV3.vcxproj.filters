@@ -39,7 +39,7 @@
     <ClCompile Include="src\random.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\TestBox.cpp">
+    <ClCompile Include="src\BallSimulation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Vec2.cpp">
@@ -68,7 +68,7 @@
     <ClInclude Include="include\Ball.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\TestBox.h">
+    <ClInclude Include="include\BallSimulation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Vec2.h">

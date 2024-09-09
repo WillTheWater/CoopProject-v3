@@ -1,3 +1,6 @@
+#pragma once
+
+
 #include "Ball.h"
 #include "Vec2.h"
 
@@ -10,12 +13,12 @@
 
 
 
-class TestBox
+class BallSimulation
 {
 public:
-	TestBox(int width, int height, sf::RenderWindow& window, int minVel, int maxVel, int minRad, int maxRad, int numBalls);
+	BallSimulation(int width, int height, sf::RenderWindow& window, int minVel, int maxVel, int minRad, int maxRad, int numBalls);
 
-	~TestBox();
+	~BallSimulation();
 
 	void createRandomBalls();
 
@@ -45,7 +48,7 @@ public:
 
 	void incrementMouseHeldTime(double deltaTime);
 
-	void testMouseHeld(sf::Event& e);
+	void testMouseHeld();
 
 private:
 
@@ -66,8 +69,9 @@ private:
 
 	std::vector<Ball*> m_balls;
 	sf::RenderWindow& m_windowRef;
+
 	Ball* m_selectedBall;
+	Ball* m_hoveredBall;
+		
 	sf::RectangleShape m_rect;
-
-
 };

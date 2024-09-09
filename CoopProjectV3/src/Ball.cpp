@@ -11,7 +11,7 @@ Ball::Ball(double radius, Vec2 pos = (0, 0), Vec2 vel = (0, 0), Vec2 accel = (0,
 	,m_width { std::fabs(radius * 2) }
 {
 	m_circle.setRadius(radius);
-	m_circle.setFillColor(sf::Color::Blue);
+	m_circle.setFillColor(sf::Color(231,76,60, 200));
 	m_circle.setPosition({ (float)pos.getx(), (float)pos.gety() });
 }
 

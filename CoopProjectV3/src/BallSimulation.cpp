@@ -1,52 +1,54 @@
-#include "TestBox.h"
+#include "BallSimulation.h"
 
 
-TestBox::TestBox(int width, int height, sf::RenderWindow& window, int minVel, int maxVel, int minRad, int maxRad, int numBalls)
+BallSimulation::BallSimulation(int width, int height, sf::RenderWindow& window, int minVel, int maxVel, int minRad, int maxRad, int numBalls)
 	: m_width{ width }
 	, m_height{ height }
 	, m_balls{}
 	, m_windowRef{ window }
-	, m_minRanVel(minVel)
-	, m_maxRanVel(maxVel)
-	, m_minRanRadius(minRad)
-	, m_maxRanRadius(maxRad)
-	, m_ballsToGenerate(numBalls)
+	, m_minRanVel{ minVel }
+	, m_maxRanVel{maxVel}
+	, m_minRanRadius{ minRad }
+	, m_maxRanRadius{maxRad}
+	, m_ballsToGenerate{ numBalls }
 	, m_rect{ sf::Vector2f(width, height) }
 	, m_offsetX{0}
 	, m_offsetY{0}
 	, m_mouseDown{ false }
 {
-	m_rect.setFillColor(sf::Color::Green);
+	m_rect.setFillColor(sf::Color(115,198,182,150));
+	m_rect.setOutlineThickness(5);
+	m_rect.setOutlineColor(sf::Color(255, 255, 255, 255));
 	createRandomBalls();
 	m_offsetX = (m_windowRef.getSize().x - m_rect.getSize().x) / 2;
 	m_offsetY = (m_windowRef.getSize().y - m_rect.getSize().y) / 2;
 }
 
-TestBox::~TestBox()
+BallSimulation::~BallSimulation()
 {
 	destroyBalls();
 }
 
-void TestBox::resetBalls()
+void BallSimulation::resetBalls()
 {
 	destroyBalls();
 	createRandomBalls();
 }
 
-void TestBox::destroyBalls()
+void BallSimulation::destroyBalls()
 {
-	for (Ball* b : m_balls)
-	{
-		if (b != nullptr)
-		{
-			delete b;
-			b = nullptr;
-		}
-	}
+	//for (Ball* b : m_balls)
+	//{
+	//	if (b != nullptr)
+	//	{
+	//		delete b;
+	//		b = nullptr;
+	//	}
+	//}
 	m_balls.clear();
 }
 
-void TestBox::createRandomBalls()
+void BallSimulation::createRandomBalls()
 {
 	for(int i{0}; i < m_ballsToGenerate; i++)
 	{
@@ -57,20 +59,30 @@ void TestBox::createRandomBalls()
 	}
 }
 
-void TestBox::render()
+void BallSimulation::render()
 {
 	m_rect.setPosition(m_offsetX, m_offsetY);
 
 	m_windowRef.draw(m_rect);
 	for (Ball* b : m_balls)
 	{
-		
-
 		// Render the circle
 		double circlePosX = b->getCircle().getPosition().x;
 		double circlePosY = b->getCircle().getPosition().y;
 		double radius = b->getRadius();
 		b->getCircle().setPosition(circlePosX + m_offsetX, circlePosY + m_offsetY);
+
+		if (b == m_selectedBall)
+		{
+			b->getCircle().setOutlineThickness(5);
+			b->getCircle().setOutlineColor(sf::Color::Red);
+		}
+		else
+		{
+			b->getCircle().setOutlineThickness(0);
+		}
+
+
 		m_windowRef.draw(b->getCircle());
 
 		// Render the velocity vector line
@@ -84,8 +96,7 @@ void TestBox::render()
 		lines[0].color = sf::Color::Red;
 		lines[1].position = sf::Vector2f(vel_linex + m_offsetX + radius, vel_liney + m_offsetY + radius);
 		lines[1].color = sf::Color::Red;
-		m_windowRef.draw(lines);		
-
+		m_windowRef.draw(lines);
 
 	}
 
@@ -111,7 +122,7 @@ void TestBox::render()
 	}
 }
 
-void TestBox::update(double deltaTime)
+void BallSimulation::update(double deltaTime)
 {
 	for (Ball* b : m_balls)
 	{
@@ -119,7 +130,7 @@ void TestBox::update(double deltaTime)
 	}
 }
 
-void TestBox::handleCollisionBox()
+void BallSimulation::handleCollisionBox()
 {
 	for (Ball* b : m_balls)
 	{
@@ -151,7 +162,7 @@ void TestBox::handleCollisionBox()
 	}
 }
 
-void TestBox::handleCollisionBall()
+void BallSimulation::handleCollisionBall()
 {
 	double totalVelocity = 0;
 
@@ -254,12 +265,12 @@ void TestBox::handleCollisionBall()
 	//std::cout << "Total Velocity: " << totalVelocity << '\n';
 }
 
-void TestBox::resolveBall2BallCollision(Ball& b1, Ball& b2)
+void BallSimulation::resolveBall2BallCollision(Ball& b1, Ball& b2)
 {
 
 }
 
-bool TestBox::doBallsOverlap(Ball& b1, Ball& b2)
+bool BallSimulation::doBallsOverlap(Ball& b1, Ball& b2)
 {
 	double b1Radius = b1.getRadius();
 	double b2Radius = b2.getRadius();
@@ -274,7 +285,7 @@ bool TestBox::doBallsOverlap(Ball& b1, Ball& b2)
 	return (distance <= b1Radius + b2Radius);
 }
 
-void TestBox::applyFriction(double deltaTime)
+void BallSimulation::applyFriction(double deltaTime)
 {
 	for (Ball* b : m_balls)
 	{
@@ -286,10 +297,10 @@ void TestBox::applyFriction(double deltaTime)
 		Vec2 newvel{ (velx * velscale * velscale), (vely * velscale * velscale) };
 		b->setVelocity(newvel);
 	}
-
 }
 
-bool TestBox::ballsAtRest()
+
+bool BallSimulation::ballsAtRest()
 {
 	bool atRest = true;
 
@@ -308,7 +319,7 @@ bool TestBox::ballsAtRest()
 	return atRest;
 }
 
-void TestBox::pollMouse()
+void BallSimulation::pollMouse()
 {
 	sf::Vector2i mousePos = sf::Mouse::getPosition(m_windowRef);
 	double mousex = mousePos.x;
@@ -323,23 +334,17 @@ void TestBox::pollMouse()
 		if (distance < (b->getRadius()))
 		{
 			//b->getCircle().setFillColor(sf::Color::Red);
-			b->getCircle().setOutlineThickness(5);
-			b->getCircle().setOutlineColor(sf::Color::Red);
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 			{
 				m_selectedBall = b;
+
 			}
-		}
-		else
-		{
-			b->getCircle().setOutlineThickness(0);
 		}
 
 	}
 }
 
-
-void TestBox::testMouseHeld(sf::Event& e)
+void BallSimulation::testMouseHeld()
 {
 	/*if(!ballsAtRest())
 	{
@@ -373,14 +378,12 @@ void TestBox::testMouseHeld(sf::Event& e)
 		
 }
 
-void TestBox::shootBall()
+void BallSimulation::shootBall()
 {
 	if (!m_selectedBall)
 	{
 		return;
 	}
-
-	
 
 	sf::Vector2i mousePos = sf::Mouse::getPosition(m_windowRef);
 	double mousePosX = mousePos.x;
@@ -408,7 +411,7 @@ void TestBox::shootBall()
 
 }
 
-void TestBox::incrementMouseHeldTime(double deltaTime)
+void BallSimulation::incrementMouseHeldTime(double deltaTime)
 {
 	if (m_mouseDown)
 	{

@@ -43,6 +43,46 @@ float Game::GetDeltaTime() const
     return mDeltaTime;
 }
 
+void Game::InitializeSim()
+{
+    mBallSim = std::make_unique<BallSimulation>(1600, 800, mWindow, 0, 500, 10, 50, 20);
+}
+
+void Game::UpdateSim()
+{
+    mBallSim->update(mDeltaTime);
+    mBallSim->handleCollisionBox();
+    mBallSim->handleCollisionBall();
+    mBallSim->applyFriction(mDeltaTime);
+}
+
+void Game::DrawingSim()
+{
+    mBallSim->render();
+}
+
+void Game::HandleInputSim()
+{
+    mBallSim->pollMouse();
+    mBallSim->testMouseHeld();
+    mBallSim->incrementMouseHeldTime(mDeltaTime);
+}
+
+void Game::ResetSim()
+{
+    mBallSim->resetBalls();
+}
+
+bool Game::isSimInitialized()
+{
+    if(mBallSim)
+    {
+        return true;
+    }
+
+    return false;
+}
+
 void Game::Tick()
 {
     mDeltaTime = mClock.restart().asSeconds();
